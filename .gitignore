@@ -1,0 +1,23 @@
+# OS & system files
+AppData/
+*.blb
+*.parc
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# Wakatime
+.wakatime.cfg
+.wakatime.cfg.bak
+
+# Node / Python / build
+node_modules/
+venv/
+__pycache__/
+dist/
+build/
+
+# Logs
+*.log
