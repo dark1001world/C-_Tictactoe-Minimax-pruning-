@@ -38,7 +38,6 @@ vector<string> extractArray(const string& json, const string& key) {
     stringstream ss(arrayContent);
     string item;
     while (getline(ss, item, ',')) {
-        // Remove quotes and whitespace
         size_t start = item.find("\"");
         size_t finish = item.rfind("\"");
         if (start != string::npos && finish != string::npos) {
@@ -50,15 +49,11 @@ vector<string> extractArray(const string& json, const string& key) {
 }
 
 int main() {
-    // Read JSON input from stdin
     string input = readInput();
     
-    // Parse input
     vector<string> boardState = extractArray(input, "board");
     string aiSymbol = extractValue(input, "aiSymbol");
     string humanSymbol = extractValue(input, "humanSymbol");
-    
-    // Create board and set state
     Board board;
     for (int i = 0; i < 9; i++) {
         if (boardState[i] != "_") {
@@ -66,24 +61,18 @@ int main() {
         }
     }
     
-    // Create AI and get move
     AI ai(aiSymbol[0], humanSymbol[0]);
     int move = ai.chooseMove(board);
     
-    // Make the move
     board.makeMove(move, aiSymbol[0]);
     
-    // Check game state
     bool hasWinner = board.hasWinner();
     bool isFull = board.isFull();
-    
-    // Find winner if exists
     string winner = "null";
     if (hasWinner) {
         winner = "\"" + string(1, board.getCell(move)) + "\"";
     }
     
-    // Output JSON response
     cout << "{";
     cout << "\"move\":" << move << ",";
     cout << "\"board\":[";

@@ -5,9 +5,8 @@ import subprocess
 import json
 import os
 from contextlib import asynccontextmanager
-# Enable CORS for React frontend
 class GameState(BaseModel):
-    board: list[str]  # 9 elements, each is 'X', 'O', or '_'
+    board: list[str]  
     aiSymbol: str
     humanSymbol: str
 
@@ -18,7 +17,6 @@ class MoveResponse(BaseModel):
     isFull: bool
     winner: str | None
 
-# Compile C++ code on startup (you'll need to create cpp_engine.cpp)
 @asynccontextmanager
 async def compile_cpp(app:FastAPI):
     try:
@@ -37,7 +35,7 @@ async def compile_cpp(app:FastAPI):
 app = FastAPI(lifespan=compile_cpp)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # React dev server
+    allow_origins=["http://localhost:5173"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -46,14 +44,13 @@ app.add_middleware(
 @app.post("/api/get-ai-move", response_model=MoveResponse)
 async def get_ai_move(state: GameState):
     try:
-        # Prepare input for C++ engine
         input_data = {
             "board": state.board,
             "aiSymbol": state.aiSymbol,
             "humanSymbol": state.humanSymbol
         }
         
-        # Call C++ engine
+    
         result = subprocess.run(
             ["./tictactoe_engine"],
             input=json.dumps(input_data),
@@ -65,7 +62,6 @@ async def get_ai_move(state: GameState):
         if result.returncode != 0:
             raise HTTPException(status_code=500, detail=f"Engine error: {result.stderr}")
         
-        # Parse output from C++ engine
         output = json.loads(result.stdout)
         
         return MoveResponse(
